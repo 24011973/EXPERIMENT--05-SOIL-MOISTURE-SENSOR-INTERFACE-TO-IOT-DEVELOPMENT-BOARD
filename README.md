@@ -3,6 +3,7 @@
 ## Aim: 
 
 To Interface a Analog Input  (soil moisture sensor) to ARM IOT development board and write a  program to obtain  the data on the com port 
+## name : ETHICVARAN S
 ## Components required: 
 
 STM32 CUBE IDE, ARM IOT development board,  STM programmer tool,Soil Moisture Sensor.
@@ -107,12 +108,72 @@ GND is the ground pin.
 
 
 ## STM 32 CUBE PROGRAM :
+```c
+#include "main.h"
+#include "stdio.h"
 
+#if defined(_GNUC_)
 
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif
+uint16_t analogvalue;
 
+ADC_HandleTypeDef hadc;
+
+UART_HandleTypeDef huart2;
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_ADC_Init(void);
+static void MX_USART2_UART_Init(void);
+
+int main(void)
+{
+
+  HAL_Init();
+
+    SystemClock_Config();
+
+    MX_GPIO_Init();
+  MX_ADC_Init();
+  MX_USART2_UART_Init();
+  
+  while (1)
+  {
+    	  HAL_ADC_Start(&hadc);
+
+	  HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY);
+	  	  	  analogvalue = HAL_ADC_GetValue(&hadc);
+	  	  	printf("Analog value : %ld\n", analogvalue);
+	  	  	  
+	  	  	  uint32_t soilmoist =100- (100 *analogvalue) / 4095;
+
+	  	  	  printf("Soil moisture : %ld %%\n", soilmoist);
+	  	  	  HAL_Delay(1000);
+    
+  }
+  
+}
+
+PUTCHAR_PROTOTYPE
+{
+	HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xFFFF);
+
+	return ch;
+}
+```
 ## Output screen shots on serial monitor   :
+
+<img width="645" height="1159" alt="image" src="https://github.com/user-attachments/assets/cecfdc33-4b1e-4a8a-9381-fc357a58774c" />
+
  
- 
+# Setup:
+
+LED ON:
+<img width="1180" height="1600" alt="image" src="https://github.com/user-attachments/assets/9c680611-4207-4a99-86b2-3d40bd7f1120" />
+
+ LED OFF:
+<img width="720" height="1600" alt="image" src="https://github.com/user-attachments/assets/f0151ef1-f756-4d08-8718-d80b1749a413" />/>
+
  
  
 ## Result :
